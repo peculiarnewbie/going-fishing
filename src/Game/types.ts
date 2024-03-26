@@ -71,5 +71,5 @@ export type GameState = {
 	gold: number;
 	fisingPole: FishSizeType;
 	baits: BaitStore;
-	fishes: FishType[];
+	fishes: [number, number][];
 };

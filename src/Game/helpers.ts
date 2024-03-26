@@ -34,3 +34,53 @@ export function getFishPrice(size: FishSizeType, color: FishColorType) {
 
 	return price;
 }
+
+function generateCount(totalCount: number) {
+	let rest = 1;
+	const count = [];
+
+	for (let i = 0; i < 2; i++) {
+		const rand = Math.random() * rest;
+		count.push(Math.floor(rand * totalCount));
+		rest -= rand;
+	}
+
+	count.push(totalCount - count[0] - count[1]);
+
+	return count;
+}
+
+function arrayFromChance(array: number[]) {
+	const newArray = [];
+
+	for (let i = 0; i < array.length; i++) {
+		for (let j = 0; j < array[i]; j++) {
+			newArray.push(i);
+		}
+	}
+
+	return newArray;
+}
+
+function shuffle(array: any[]) {
+	return array.sort(() => Math.random() - 0.5);
+}
+
+export function generateFishes(fishCount: number) {
+	const [redCount, blueCount, greenCount] = generateCount(fishCount);
+	const sizeChance = generateCount(fishCount);
+	const [smallSize, mediumSize, bigSize] = sizeChance;
+
+	const sizeArray = arrayFromChance(sizeChance);
+	const shuffledSize = shuffle(sizeArray);
+
+	const fishes: [number, number][] = [];
+
+	for (let i = 0; i < fishCount; i++) {
+		let color = 0;
+		if (i >= redCount && i < redCount + greenCount) color = 1;
+		else color = 2;
+
+		fishes.push([color, shuffledSize[i]]);
+	}
+}
