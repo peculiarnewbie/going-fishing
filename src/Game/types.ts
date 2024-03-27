@@ -67,7 +67,16 @@ export type BaitStore = {
 	[Property in FishColorType]: number;
 };
 
+export const DayStayeKeys = {
+	BuyPole: "buy pole",
+	BuyBait: "buy bait",
+	Fishing: "fishing",
+} as const;
+
+export type DayStateType = (typeof DayStayeKeys)[keyof typeof DayStayeKeys];
+
 export type GameState = {
+	state: DayStateType;
 	gold: number;
 	fisingPole: FishSizeType;
 	baits: BaitStore;
