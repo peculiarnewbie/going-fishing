@@ -67,9 +67,9 @@ function shuffle(array: any[]) {
 }
 
 export function generateFishes(fishCount: number) {
-	const [redCount, blueCount, greenCount] = generateCount(fishCount);
+	const colorChance = generateCount(fishCount);
 	const sizeChance = generateCount(fishCount);
-	const [smallSize, mediumSize, bigSize] = sizeChance;
+	const [redCount, greenCount, blueCount] = colorChance;
 
 	const sizeArray = arrayFromChance(sizeChance);
 	const shuffledSize = shuffle(sizeArray);
@@ -78,9 +78,12 @@ export function generateFishes(fishCount: number) {
 
 	for (let i = 0; i < fishCount; i++) {
 		let color = 0;
-		if (i >= redCount && i < redCount + greenCount) color = 1;
+		if (i < redCount) color = 0;
+		else if (i >= redCount && i < redCount + greenCount) color = 1;
 		else color = 2;
 
 		fishes.push([color, shuffledSize[i]]);
 	}
+
+	return { fishes: fishes, colorChance: colorChance, sizeChance: sizeChance };
 }

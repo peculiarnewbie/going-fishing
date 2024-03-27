@@ -15,6 +15,7 @@ import {
 } from "./Game/types";
 import { createStore, produce } from "solid-js/store";
 import DebugUI from "./UI/DebugUI";
+import { generateFishes } from "./Game/helpers";
 
 const App: Component = () => {
 	const [gameState, setGameState] = createStore<GameState>({
@@ -61,6 +62,12 @@ const App: Component = () => {
 		else buyBait(item);
 	};
 
+	const startFishing = () => {
+		setGameState("state", DayStayeKeys.Fishing);
+		const { fishes, colorChance, sizeChance } = generateFishes(10);
+		setGameState("fishes", fishes);
+	};
+
 	return (
 		<div class={styles.App}>
 			<header class={styles.header}>
@@ -72,6 +79,12 @@ const App: Component = () => {
 					</Match>
 					<Match when={gameState.state === DayStayeKeys.BuyBait}>
 						<PurchaseList items={Baits} buy={buy} />
+						<button
+							onclick={startFishing}
+							class="flex p-1 bg-slate-400 rounded-md"
+						>
+							continue
+						</button>
 					</Match>
 				</Switch>
 				<DebugUI gameState={gameState} />

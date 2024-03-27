@@ -22,12 +22,10 @@ function BuyButton(props: {
 	item: FishingPoleType | BaitType;
 	buy: (item: FishingPoleType | BaitType) => void;
 }) {
-	const [isPole, setIsPole] = createSignal(false);
 	const [text, setText] = createSignal("");
 
 	createEffect(() => {
 		if ("size" in props.item) {
-			setIsPole(true);
 			setText(`Buy ${props.item.size} fishing pole`);
 		} else {
 			setText(`Buy ${props.item.color} bait`);
