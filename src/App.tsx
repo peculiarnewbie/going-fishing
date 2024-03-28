@@ -92,6 +92,7 @@ const App: Component = () => {
 						src="src/assets/title.webp"
 						class="mx-auto w-2/3 max-w-[600px]"
 					/>
+					<DebugUI gameState={gameState} />
 			</header>
 		</div>
 	);

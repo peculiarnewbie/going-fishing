@@ -6,8 +6,6 @@ import {
 	FishingPoleType,
 } from "./types";
 
-export function purchasePole(pole: FishingPoleType) {}
-
 export function getFishPrice(size: FishSizeType, color: FishColorType) {
 	let price = 0;
 

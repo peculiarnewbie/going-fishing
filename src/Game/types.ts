@@ -78,7 +78,7 @@ export type DayStateType = (typeof DayStayeKeys)[keyof typeof DayStayeKeys];
 export type GameState = {
 	state: DayStateType;
 	gold: number;
-	fisingPole: FishSizeType;
+	fisingPole: FishSizeType | "none";
 	baits: BaitStore;
 	fishes: [number, number][];
 };
