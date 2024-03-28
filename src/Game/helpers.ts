@@ -3,6 +3,8 @@ import {
 	FishColorType,
 	FishSizeKeys,
 	FishSizeType,
+	FishType,
+	FishTypeWithPrice,
 	FishingPoleType,
 } from "./types";
 
@@ -84,4 +86,51 @@ export function generateFishes(fishCount: number) {
 	}
 
 	return { fishes: fishes, colorChance: colorChance, sizeChance: sizeChance };
+}
+
+export function sellFishes(
+	relevantFishes: [number, number][],
+	size: FishSizeType,
+	baits: { red: number; green: number; blue: number }
+) {
+	const sold: FishTypeWithPrice[] = [];
+	let earned = 0;
+
+	relevantFishes.forEach((fish) => {
+		let price = 0;
+		if (fish[0] === 0) {
+			if (baits.red > 0) {
+				price = getFishPrice(size, FishColorKeys.Red);
+				baits.red--;
+				sold.push({
+					color: FishColorKeys.Red,
+					size: size,
+					price: price,
+				});
+			}
+		} else if (fish[0] === 1) {
+			if (baits.green > 0) {
+				price = getFishPrice(size, FishColorKeys.Green);
+				baits.green--;
+				sold.push({
+					color: FishColorKeys.Green,
+					size: size,
+					price: price,
+				});
+			}
+		} else {
+			if (baits.blue > 0) {
+				price = getFishPrice(size, FishColorKeys.Blue);
+				baits.blue--;
+				sold.push({
+					color: FishColorKeys.Blue,
+					size: size,
+					price: price,
+				});
+			}
+		}
+		earned += price;
+	});
+
+	return { sold: sold, earned: earned };
 }

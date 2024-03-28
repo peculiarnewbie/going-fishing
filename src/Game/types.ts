@@ -19,6 +19,12 @@ export type FishType = {
 	size: FishSizeType;
 };
 
+export type FishTypeWithPrice = {
+	color: FishColorType;
+	size: FishSizeType;
+	price: number;
+};
+
 export class Fish {
 	readonly color: FishColorType;
 	readonly size: FishSizeType;

@@ -6,7 +6,6 @@ import {
 	createSignal,
 } from "solid-js";
 
-import logo from "./logo.svg";
 import styles from "./App.module.css";
 import PurchaseList from "./UI/PurchaseList";
 import { Baits, FishingPoles } from "./Game/data";
@@ -18,10 +17,12 @@ import {
 	FishingPoleType,
 	GameState,
 	BaitStore,
+	FishTypeWithPrice,
 } from "./Game/types";
-import { createStore, produce } from "solid-js/store";
+import { createStore } from "solid-js/store";
 import DebugUI from "./UI/DebugUI";
-import { generateFishes } from "./Game/helpers";
+import { generateFishes, getFishPrice, sellFishes } from "./Game/helpers";
+import SoldFishes from "./UI/SoldFishes";
 
 const App: Component = () => {
 	const [gameState, setGameState] = createStore<GameState>({
@@ -37,6 +38,7 @@ const App: Component = () => {
 	const [relevantFishes, setRelevantFishes] = createSignal<
 		[number, number][]
 	>([]);
+	const [soldFishes, setSoldFishes] = createSignal<FishTypeWithPrice[]>([]);
 
 	const buyPole = (pole: FishingPoleType) => {
 		console.log(pole);
@@ -93,6 +95,14 @@ const App: Component = () => {
 			setRelevantFishes(
 				gameState.fishes.filter((fish) => fish[1] === size)
 			);
+		} else if (gameState.state === DayStayeKeys.Fishing) {
+			if (gameState.fisingPole === "none") return;
+			const { sold, earned } = sellFishes(
+				relevantFishes(),
+				gameState.fisingPole,
+				{ ...gameState.baits }
+			);
+			setSoldFishes(sold);
 		}
 	});
 
@@ -104,6 +114,7 @@ const App: Component = () => {
 						src="src/assets/title.webp"
 						class="mx-auto w-2/3 max-w-[600px]"
 					/>
+
 					<div class="flex w-full items-center max-w-[600px] gap-8 p-2">
 						<div class="flex flex-col text-amber-600 ">
 							<p>gold</p>
@@ -129,6 +140,7 @@ const App: Component = () => {
 							</div>
 						</div>
 					</div>
+
 					<div class="self-start py-2">
 						fish forecast:
 						<div>{`small: ${fishSizes()[0]}, medium: ${
@@ -141,6 +153,7 @@ const App: Component = () => {
 							relevant fishes: {JSON.stringify(relevantFishes())}
 						</div>
 					</div>
+
 					<Switch>
 						<Match when={gameState.state === DayStayeKeys.BuyPole}>
 							<div class="p-2 font-bold">
@@ -165,6 +178,9 @@ const App: Component = () => {
 							>
 								continue
 							</button>
+						</Match>
+						<Match when={gameState.state === DayStayeKeys.Fishing}>
+							<SoldFishes fishes={soldFishes()} />
 						</Match>
 					</Switch>
 
