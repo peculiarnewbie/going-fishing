@@ -27,13 +27,14 @@ import SoldFishes from "./UI/SoldFishes";
 
 const App: Component = () => {
 	const [gameState, setGameState] = createStore<GameState>({
-		state: DayStayeKeys.BuyPole,
+		state: DayStayeKeys.InputFish,
 		gold: 100,
 		fisingPole: "none",
 		baits: { red: 0, green: 0, blue: 0 },
 		fishes: [],
 	});
 
+	const [fishCount, setFishCount] = createSignal(10);
 	const [fishSizes, setFishSizes] = createSignal<number[]>([]);
 	const [fishColors, setFishColors] = createSignal<number[]>([]);
 	const [relevantFishes, setRelevantFishes] = createSignal<
@@ -82,15 +83,17 @@ const App: Component = () => {
 		setGameState("state", DayStayeKeys.Fishing);
 	};
 
-	createEffect(() => {
-		const { fishes, colorChance, sizeChance } = generateFishes(10);
-		setFishColors(colorChance);
-		setFishSizes(sizeChance);
-		setGameState("fishes", fishes);
-	});
+	createEffect(() => {});
 
 	createEffect(() => {
-		if (gameState.state === DayStayeKeys.BuyBait) {
+		if (gameState.state === DayStayeKeys.BuyPole) {
+			const { fishes, colorChance, sizeChance } = generateFishes(
+				fishCount()
+			);
+			setFishColors(colorChance);
+			setFishSizes(sizeChance);
+			setGameState("fishes", fishes);
+		} else if (gameState.state === DayStayeKeys.BuyBait) {
 			let size = 0;
 			if (gameState.fisingPole === FishSizeKeys.Medium) size = 1;
 			if (gameState.fisingPole === FishSizeKeys.Big) size = 2;
@@ -118,19 +121,6 @@ const App: Component = () => {
 						class="mx-auto w-2/3 max-w-[600px]"
 					/>
 
-					<div class="self-start py-2">
-						{"today's fish forecast:"}
-						<div>{`small: ${fishSizes()[0]}, medium: ${
-							fishSizes()[1]
-						}, big: ${fishSizes()[2]}`}</div>
-						<div>{`red: ${fishColors()[0]}, green: ${
-							fishColors()[1]
-						}, blue: ${fishColors()[2]}`}</div>
-						{/* <div>
-							relevant fishes: {JSON.stringify(relevantFishes())}
-						</div> */}
-					</div>
-
 					<div class="flex w-full items-center max-w-[600px] gap-8 p-2">
 						<div class="flex flex-col text-amber-600 ">
 							<p>gold</p>
@@ -157,7 +147,56 @@ const App: Component = () => {
 						</div>
 					</div>
 
+					<Show when={gameState.state !== DayStayeKeys.InputFish}>
+						<div class="self-start py-2">
+							{"today's fish forecast:"}
+							<div>{`small: ${fishSizes()[0]}, medium: ${
+								fishSizes()[1]
+							}, big: ${fishSizes()[2]}`}</div>
+							<div>{`red: ${fishColors()[0]}, green: ${
+								fishColors()[1]
+							}, blue: ${fishColors()[2]}`}</div>
+							{/* <div>
+							relevant fishes: {JSON.stringify(relevantFishes())}
+						</div> */}
+						</div>
+					</Show>
+
 					<Switch>
+						<Match
+							when={gameState.state === DayStayeKeys.InputFish}
+						>
+							<form
+								class="flex flex-col gap-2 pt-2"
+								onsubmit={() =>
+									setGameState("state", DayStayeKeys.BuyPole)
+								}
+							>
+								<div>{`input number of fishes (10-50)`}</div>
+								<input
+									class="border border-blue-400 p-1 rounded-md"
+									placeholder="10"
+									type="number"
+									min={10}
+									max={50}
+									onchange={(e) => {
+										setFishCount(
+											parseInt(
+												(e.target as HTMLInputElement)
+													.value
+											)
+										);
+									}}
+								/>
+								<button
+									class="flex p-2 mt-2  bg-blue-400 rounded-md text-center"
+									type="submit"
+								>
+									continue
+								</button>
+							</form>
+						</Match>
+
 						<Match when={gameState.state === DayStayeKeys.BuyPole}>
 							<div class="p-2 font-bold">
 								Choose your fishing pole:
@@ -168,6 +207,7 @@ const App: Component = () => {
 								gold={gameState.gold}
 							/>
 						</Match>
+
 						<Match when={gameState.state === DayStayeKeys.BuyBait}>
 							<div class="p-2 font-bold">Buy your baits:</div>
 							<PurchaseList
@@ -182,6 +222,7 @@ const App: Component = () => {
 								continue
 							</button>
 						</Match>
+
 						<Match when={gameState.state === DayStayeKeys.Fishing}>
 							<Show
 								when={soldFishes().length > 0}

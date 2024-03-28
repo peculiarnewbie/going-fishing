@@ -74,6 +74,7 @@ export type BaitStore = {
 };
 
 export const DayStayeKeys = {
+	InputFish: "input fish",
 	BuyPole: "buy pole",
 	BuyBait: "buy bait",
 	Fishing: "fishing",
