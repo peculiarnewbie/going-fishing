@@ -24,6 +24,7 @@ import { createStore } from "solid-js/store";
 import DebugUI from "./UI/DebugUI";
 import { generateFishes, getFishPrice, sellFishes } from "./Game/helpers";
 import SoldFishes from "./UI/SoldFishes";
+import FishPrices from "./UI/FishPrices";
 
 const App: Component = () => {
 	const [gameState, setGameState] = createStore<GameState>({
@@ -115,7 +116,7 @@ const App: Component = () => {
 	return (
 		<div class={styles.App}>
 			<header class={styles.header}>
-				<div class="container mx-auto flex flex-col items-center max-w-[600px]">
+				<div class="container mx-auto flex flex-col items-center max-w-[600px] h-screen p-2">
 					<img
 						src="src/assets/title.webp"
 						class="mx-auto w-2/3 max-w-[600px]"
@@ -189,7 +190,7 @@ const App: Component = () => {
 									}}
 								/>
 								<button
-									class="flex p-2 mt-2  bg-blue-400 rounded-md text-center"
+									class="flex p-2 mt-2  bg-blue-400 rounded-md justify-center"
 									type="submit"
 								>
 									continue
@@ -270,7 +271,9 @@ const App: Component = () => {
 						</Match>
 					</Switch>
 
-					<DebugUI gameState={gameState} />
+					<FishPrices />
+
+					{/* <DebugUI gameState={gameState} /> */}
 				</div>
 			</header>
 		</div>
