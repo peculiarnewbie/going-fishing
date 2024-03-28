@@ -88,6 +88,10 @@ const App: Component = () => {
 					</Match>
 				</Switch>
 				<DebugUI gameState={gameState} />
+					<img
+						src="src/assets/title.webp"
+						class="mx-auto w-2/3 max-w-[600px]"
+					/>
 			</header>
 		</div>
 	);
