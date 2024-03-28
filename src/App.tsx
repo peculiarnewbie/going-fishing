@@ -4,6 +4,7 @@ import {
 	Match,
 	createEffect,
 	createSignal,
+	Show,
 } from "solid-js";
 
 import styles from "./App.module.css";
@@ -39,6 +40,7 @@ const App: Component = () => {
 		[number, number][]
 	>([]);
 	const [soldFishes, setSoldFishes] = createSignal<FishTypeWithPrice[]>([]);
+	const [earned, setEarned] = createSignal(0);
 
 	const buyPole = (pole: FishingPoleType) => {
 		console.log(pole);
@@ -103,6 +105,7 @@ const App: Component = () => {
 				{ ...gameState.baits }
 			);
 			setSoldFishes(sold);
+			setEarned(earned);
 		}
 	});
 
@@ -114,6 +117,19 @@ const App: Component = () => {
 						src="src/assets/title.webp"
 						class="mx-auto w-2/3 max-w-[600px]"
 					/>
+
+					<div class="self-start py-2">
+						{"today's fish forecast:"}
+						<div>{`small: ${fishSizes()[0]}, medium: ${
+							fishSizes()[1]
+						}, big: ${fishSizes()[2]}`}</div>
+						<div>{`red: ${fishColors()[0]}, green: ${
+							fishColors()[1]
+						}, blue: ${fishColors()[2]}`}</div>
+						{/* <div>
+							relevant fishes: {JSON.stringify(relevantFishes())}
+						</div> */}
+					</div>
 
 					<div class="flex w-full items-center max-w-[600px] gap-8 p-2">
 						<div class="flex flex-col text-amber-600 ">
@@ -138,19 +154,6 @@ const App: Component = () => {
 									green: {gameState.baits.green}
 								</div>
 							</div>
-						</div>
-					</div>
-
-					<div class="self-start py-2">
-						fish forecast:
-						<div>{`small: ${fishSizes()[0]}, medium: ${
-							fishSizes()[1]
-						}, big: ${fishSizes()[2]}`}</div>
-						<div>{`red: ${fishColors()[0]}, green: ${
-							fishColors()[1]
-						}, blue: ${fishColors()[2]}`}</div>
-						<div>
-							relevant fishes: {JSON.stringify(relevantFishes())}
 						</div>
 					</div>
 
@@ -180,7 +183,49 @@ const App: Component = () => {
 							</button>
 						</Match>
 						<Match when={gameState.state === DayStayeKeys.Fishing}>
-							<SoldFishes fishes={soldFishes()} />
+							<Show
+								when={soldFishes().length > 0}
+								fallback={
+									<div>{`you've caught no fish today`}</div>
+								}
+							>
+								<SoldFishes
+									fishes={soldFishes()}
+									earned={earned()}
+								/>
+							</Show>
+							<Switch>
+								<Match when={gameState.gold + earned() > 100}>
+									<div>
+										{`
+										Congratulations! In total you've earned 
+										${gameState.gold + earned() - 100} gold
+										today
+									`}
+									</div>
+								</Match>
+								<Match when={gameState.gold + earned() === 100}>
+									<div>
+										{`	Welp, feels like you just wasted the
+										day. You've ended up with the same
+										amount of gold as you started
+									`}
+									</div>
+								</Match>
+								<Match when={gameState.gold + earned() < 100}>
+									<div>
+										{`Oh No! you've lost ${
+											100 - (gameState.gold + earned())
+										} gold today`}
+									</div>
+								</Match>
+							</Switch>
+							<button
+								onclick={() => location.reload()}
+								class="flex p-2 mt-2  bg-blue-400 rounded-md"
+							>
+								restart
+							</button>
 						</Match>
 					</Switch>
 

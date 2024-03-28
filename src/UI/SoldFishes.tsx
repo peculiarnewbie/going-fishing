@@ -1,7 +1,10 @@
 import { For } from "solid-js";
 import { FishTypeWithPrice } from "../Game/types";
 
-export default function SoldFishes(props: { fishes: FishTypeWithPrice[] }) {
+export default function SoldFishes(props: {
+	fishes: FishTypeWithPrice[];
+	earned: number;
+}) {
 	return (
 		<div class="flex flex-col">
 			<For each={props.fishes}>
@@ -11,6 +14,7 @@ export default function SoldFishes(props: { fishes: FishTypeWithPrice[] }) {
 					</div>
 				)}
 			</For>
+			<div>total earned: {props.earned} gold</div>
 		</div>
 	);
 }
