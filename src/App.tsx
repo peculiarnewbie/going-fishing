@@ -118,7 +118,7 @@ const App: Component = () => {
 			<header class={styles.header}>
 				<div class="container mx-auto flex flex-col items-center max-w-[600px] h-screen p-2">
 					<img
-						src="src/assets/title.webp"
+						src="https://raw.githubusercontent.com/peculiarnewbie/going-fishing/master/src/assets/title.webp"
 						class="mx-auto w-2/3 max-w-[600px]"
 					/>
 
